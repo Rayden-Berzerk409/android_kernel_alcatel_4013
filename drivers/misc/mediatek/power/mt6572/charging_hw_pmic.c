@@ -1116,7 +1116,7 @@ kal_bool charging_type_detection_done(void)
 	return status;	
  }
 
- static kal_uint32 charging_get_error_state(void *data)
+# static kal_uint32 charging_get_error_state(void *data)
 {
 	return STATUS_UNSUPPORTED;
 }
