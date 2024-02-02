@@ -569,7 +569,7 @@ static void brightness_set_pmic_isink_duty(unsigned int level)
 #endif
 int mt_brightness_set_pmic(enum mt65xx_led_pmic pmic_type, u32 level, u32 div)
 {
-#define PMIC_BACKLIGHT_LEVEL    80
+#define PMIC_BACKLIGHT_LEVEL    74
 
 	u32 tmp_level = level;
 	static bool backlight_init_flag = false;
@@ -582,7 +582,7 @@ int mt_brightness_set_pmic(enum mt65xx_led_pmic pmic_type, u32 level, u32 div)
                 20,     21,     22,     23,     24,     25,     26,     27,     28,     29,     30,     31,     
                 21,     22,     23,     24,     25,     26,     27,     28,     29,     30,     31,     24,     
                 25,     26,     27,     28,     29,     30,     31,     25,     26,     27,     28,     29,     
-                30,     31,     26,     27,     28,     29,     30,     31,
+                30,     31, 
 
         };
         static unsigned char current_mapping[PMIC_BACKLIGHT_LEVEL] = {
@@ -592,7 +592,7 @@ int mt_brightness_set_pmic(enum mt65xx_led_pmic pmic_type, u32 level, u32 div)
                 1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      
                 2,      2,      2,      2,      2,      2,      2,      2,      2,      2,      2,      3,      
                 3,      3,      3,      3,      3,      3,      3,      4,      4,      4,      4,      4,      
-                4,      4,      5,      5,      5,      5,      5,      5,
+                4,      4,  
         };
 
 	LEDS_DEBUG("[LED]PMIC#%d:%d\n", pmic_type, level);
@@ -634,13 +634,14 @@ int mt_brightness_set_pmic(enum mt65xx_led_pmic pmic_type, u32 level, u32 div)
                         upmu_set_rg_isink2_double_en(0x1); // Enable double current
                         upmu_set_isink_phase2_dly_en(0x1); // Enable phase delay
                         upmu_set_isink_chop2_en(0x1); // Enable CHOP clk   
-                        // ISINK3
+                      
+			  // ISINK3
                         upmu_set_rg_isink3_ck_pdn(0x0); // Disable power down   
                         upmu_set_rg_isink3_ck_sel(0x1); // Freq = 1Mhz for Backlight
                         upmu_set_isink_ch3_mode(ISINK_PWM_MODE);
                         //upmu_set_isink_ch3_step(0x5); // 24mA
                         upmu_set_isink_sfstr3_en(0x0); // Disable soft start
-                        upmu_set_rg_isink3_double_en(0x1); // Enable double current
+                        upmu_set_rg_isink3_double_en(0x0); // Disable double current //fangjie modify, because pixi3-4 isink3 only connect one led.
                         upmu_set_isink_phase3_dly_en(0x1); // Enable phase delay
                         upmu_set_isink_chop3_en(0x1); // Enable CHOP clk                
 			backlight_init_flag = true;
@@ -667,18 +668,18 @@ int mt_brightness_set_pmic(enum mt65xx_led_pmic pmic_type, u32 level, u32 div)
                         upmu_set_isink_dim1_duty(duty_mapping[level-1]);
                         upmu_set_isink_dim2_duty(duty_mapping[level-1]);
                         upmu_set_isink_dim3_duty(duty_mapping[level-1]);
-                        upmu_set_isink_ch0_step(current_mapping[level-1]);
+		    	upmu_set_isink_ch0_step(current_mapping[level-1]);
                         upmu_set_isink_ch1_step(current_mapping[level-1]);
                         upmu_set_isink_ch2_step(current_mapping[level-1]);
-                        upmu_set_isink_ch3_step(current_mapping[level-1]);
-                        upmu_set_isink_dim0_fsel(0x2); // 20Khz
+		        upmu_set_isink_ch3_step(current_mapping[level-1]);
+		        upmu_set_isink_dim0_fsel(0x2); // 20Khz
                         upmu_set_isink_dim1_fsel(0x2); // 20Khz
                         upmu_set_isink_dim2_fsel(0x2); // 20Khz
-                        upmu_set_isink_dim3_fsel(0x2); // 20Khz            
-                        upmu_set_isink_ch0_en(0x1); // Turn on ISINK Channel 0
+		        upmu_set_isink_dim3_fsel(0x2); // 20Khz            
+			upmu_set_isink_ch0_en(0x1); // Turn on ISINK Channel 0
                         upmu_set_isink_ch1_en(0x1); // Turn on ISINK Channel 1
                         upmu_set_isink_ch2_en(0x1); // Turn on ISINK Channel 2
-                        upmu_set_isink_ch3_en(0x1); // Turn on ISINK Channel 3
+		        upmu_set_isink_ch3_en(0x1); // Turn on ISINK Channel 3
 			bl_duty_hal = level;
 		}
 		else 
@@ -686,7 +687,7 @@ int mt_brightness_set_pmic(enum mt65xx_led_pmic pmic_type, u32 level, u32 div)
                         upmu_set_isink_ch0_en(0x0); // Turn off ISINK Channel 0
                         upmu_set_isink_ch1_en(0x0); // Turn off ISINK Channel 1
                         upmu_set_isink_ch2_en(0x0); // Turn off ISINK Channel 2
-                        upmu_set_isink_ch3_en(0x0); // Turn off ISINK Channel 3
+		        upmu_set_isink_ch3_en(0x0); // Turn off ISINK Channel 3
 			bl_duty_hal = level;
 		}
         	mutex_unlock(&leds_pmic_mutex);
@@ -779,7 +780,7 @@ int mt_brightness_set_pmic(enum mt65xx_led_pmic pmic_type, u32 level, u32 div)
                 upmu_set_isink_ch2_step(0x0); // 4mA
                 upmu_set_isink_sfstr2_tc(0x0); // 0.5us
                 upmu_set_isink_sfstr2_en(0x0); // Disable soft start
-                upmu_set_rg_isink2_double_en(0x0); // Disable double current
+                upmu_set_rg_isink2_double_en(0x1); // Enable double current for pixi3_45 key bl
                 upmu_set_isink_phase2_dly_en(0x0); // Disable phase delay
                 upmu_set_isink_chop2_en(0x0); // Disable CHOP clk
 
@@ -875,22 +876,53 @@ int mt_mt65xx_led_set_cust(struct cust_mt65xx_led *cust, int level)
 				}
                 bl_duty_hal = level;	
 				
-			}else
+			}
+			#if 0
+			else
 			{
-				if(level == 0)
+			if(level == 0)
 				{
+					if(!strcmp(cust->name,"red"))
+						{
+							mt_set_gpio_out(GPIO128,GPIO_OUT_ONE);//for power saving
+						}
 					led_tmp_setting.nled_mode = NLED_OFF;
 				}else
 				{
+					if(!strcmp(cust->name,"red"))
+						{
+							mt_set_gpio_out(GPIO128,GPIO_OUT_ZERO);//for power saving
+						}
 					led_tmp_setting.nled_mode = NLED_ON;
 				}
-				mt_led_set_pwm(cust->data,&led_tmp_setting);
+				if(!strcmp(cust->name,"red"))
+				{
+					mt_brightness_set_pmic(MT65XX_LED_PMIC_NLED_ISINK3,level, 0);
+				}
+				else
+					mt_led_set_pwm(cust->data,&led_tmp_setting);
 			}
+		#endif
 			return 1;
           
 		case MT65XX_LED_MODE_GPIO:
 			LEDS_DEBUG("brightness_set_cust:go GPIO mode!!!!!\n");
-			return ((cust_set_brightness)(cust->data))(level);
+		if(!strcmp(cust->name,"button-backlight"))
+		{
+			#if 0 //pixi3-45 use KEY LED with pmic.
+			mt_set_gpio_mode(GPIO140, GPIO_MODE_00);// GPIO MODE
+			mt_set_gpio_dir(GPIO140, GPIO_DIR_OUT);
+			if(level==0)
+			{
+				mt_set_gpio_out(GPIO140,GPIO_OUT_ZERO);
+			}
+			else
+			{
+				mt_set_gpio_out(GPIO140,GPIO_OUT_ONE);
+			}
+			#endif 
+		}
+			return 1;
               
 		case MT65XX_LED_MODE_PMIC:
 			return mt_brightness_set_pmic(cust->data, level, bl_div_hal);
@@ -980,8 +1012,8 @@ void mt_mt65xx_led_set(struct led_classdev *led_cdev, enum led_brightness level)
 		}
 		else
 		{
-			if(led_data->level != level)
-			{
+			//if(led_data->level != level)
+			//{
 				led_data->level = level;
 				if(strcmp(led_data->cust.name,"lcd-backlight") != 0)
 				{
@@ -993,15 +1025,16 @@ void mt_mt65xx_led_set(struct led_classdev *led_cdev, enum led_brightness level)
 					LEDS_DEBUG("[LED]Set Backlight directly %d at time %lu\n",led_data->level,jiffies);
 					if(MT65XX_LED_MODE_CUST_BLS_PWM == led_data->cust.mode)
 					{
-						mt_mt65xx_led_set_cust(&led_data->cust, ((((1 << MT_LED_INTERNAL_LEVEL_BIT_CNT) - 1)*level + 127)/255));
-						//mt_mt65xx_led_set_cust(&led_data->cust, led_data->level);	
+					/*modify by xiaopu.zhu for backlight adjust*/
+						//mt_mt65xx_led_set_cust(&led_data->cust, ((((1 << MT_LED_INTERNAL_LEVEL_BIT_CNT) - 1)*level + 127)/255));
+						mt_mt65xx_led_set_cust(&led_data->cust, led_data->level);	
 					}
 					else
 					{
 						mt_mt65xx_led_set_cust(&led_data->cust, led_data->level);	
 					}	
 				}
-			}
+			//}
 		}						
 #else
 	// do something only when level is changed
