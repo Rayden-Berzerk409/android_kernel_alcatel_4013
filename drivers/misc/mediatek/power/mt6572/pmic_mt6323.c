@@ -1025,18 +1025,11 @@ void fchr_key_int_handler(void)
     
     ret=pmic_config_interface(INT_STATUS1,0x1,0x1,1);    
 }
-
-
-extern int accdet_irq_handler(void);
-void accdet_int_handler(void)
-{
     kal_uint32 ret=0;
 
     xlog_printk(ANDROID_LOG_INFO, "Power/PMIC", "[accdet_int_handler]....\n");
     
    ret = accdet_irq_handler();
-	if(0 == ret){
-		xlog_printk(ANDROID_LOG_INFO, "Power/PMIC", "[accdet_int_handler] don't finished\n");
 	}
     ret=pmic_config_interface(INT_STATUS1,0x1,0x1,2);    
 }
@@ -1462,7 +1455,7 @@ ANALDO:
 VTCXO
 VA
 VCAMA
-VCN33 (¦³wifi/bt ¶}Ãö)
+VCN33 (Â¦Â³wifi/bt Â¶}ÃƒÃ¶)
 VCN28
 
 DIGLDO:
