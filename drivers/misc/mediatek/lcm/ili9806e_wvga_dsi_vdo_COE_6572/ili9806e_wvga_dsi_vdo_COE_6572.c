@@ -803,8 +803,6 @@ static unsigned int lcm_esd_recover(void)
 
 static unsigned int lcm_compare_id(void)
 {
-#if 
-
 	int array[4];
 	char buffer[5];
 	char id_high=0;
