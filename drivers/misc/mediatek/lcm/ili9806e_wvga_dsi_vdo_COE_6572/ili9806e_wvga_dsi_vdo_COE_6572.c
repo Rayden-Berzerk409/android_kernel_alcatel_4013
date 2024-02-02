@@ -251,7 +251,7 @@ static struct LCM_setting_table lcm_tdt_initialization_setting[] = {
 	{0x1A,	1,	{0x00}},	//
 	{0x1B,	1,	{0x00}},	//
 	{0x1C,	1,	{0x00}},	//
-	{0x1D,	1,	{0x00}},	//
+	{0x1D,	1,	{0x00}},	//\
 
 	{0x20,	1,	{0x01}},	//
 	{0x21,	1,	{0x23}},	//
@@ -299,7 +299,7 @@ static struct LCM_setting_table lcm_tdt_initialization_setting[] = {
 
 	{REGFLAG_END_OF_TABLE, 0x00, {}}
 #endif
-        //Ã…ÃœÂµÃ„ÃŠÃ‡Ã•Ã¢ÃŒÃ—Â´ÃºÃ‚Ã«
+        //ÅÜµÄÊÇÕâÌ×´úÂë
 
 	{0xFF,0x5,{0xFF,0x98,0x06,0x04,0x01}},     // Change to Page 1
 	{0x08,0x1,{0x10}},                 // output SDA
@@ -587,6 +587,7 @@ static void lcm_get_params(LCM_PARAMS *params)
 	//fps = data_rate * Lane_Number /( (Vsyn+VBP+VFP+Height)*(Hsyn+HBP+HFP+Width)*BPP)
 	//data_rate = CLOCK_rate * 2;
 }
+
 #if 0
 //legen add for detect lcm vendor
 static bool lcm_select_panel(void)
@@ -675,8 +676,7 @@ static void lcm_resume(void)
 	//push_table(lcm_sleep_out_setting, sizeof(lcm_sleep_out_setting) / sizeof(struct LCM_setting_table), 1);
 }
 
-static void lcm_update(unsigned int x, unsigned int y,
-                       unsigned int width, unsigned int height)
+static void lcm_update(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
 {
 	unsigned int x0 = x;
 	unsigned int y0 = y;
@@ -800,8 +800,10 @@ static unsigned int lcm_esd_recover(void)
 //  Get LCM ID Information
 // ---------------------------------------------------------------------------
 
-static unsigned int lcm_compare_id(void)
+static unsigned int lcm_compare_id()
 {
+#if 0
+
 	int array[4];
 	char buffer[5];
 	char id_high=0;
@@ -844,7 +846,9 @@ static unsigned int lcm_compare_id(void)
 #endif
 
 	return (id == LCM_ID_ILI9806E)?1:0;
+#endif
 	int id_type=0;	
+
 
 	mt_set_gpio_mode(GPIO_LCM_ID1,GPIO_MODE_00);
 	mt_set_gpio_pull_enable(GPIO_LCM_ID1, GPIO_PULL_DISABLE);
@@ -853,7 +857,7 @@ static unsigned int lcm_compare_id(void)
 	mt_set_gpio_pull_enable(GPIO_LCM_ID2, GPIO_PULL_DISABLE);
 	mt_set_gpio_dir(GPIO_LCM_ID2, GPIO_DIR_IN);
 	id_type = mt_get_gpio_in(GPIO_LCM_ID2)<<1 | mt_get_gpio_in(GPIO_LCM_ID1);
-	
+
 #if defined(BUILD_LK)
 	printf("\t\t 9806e [lcm_compare_id   id_type  %d ]\n" , id_type);		
 #else
