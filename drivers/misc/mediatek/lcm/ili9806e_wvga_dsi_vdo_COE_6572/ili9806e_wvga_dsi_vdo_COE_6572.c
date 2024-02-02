@@ -590,27 +590,6 @@ static void lcm_get_params(LCM_PARAMS *params)
 
 #if 0
 //legen add for detect lcm vendor
-static bool lcm_select_panel(void)
-{
-	int value=0;
-
-	//printk("\t\t 9806e [lcm_select_panel]\n");
-
-	mt_set_gpio_mode(GPIO_LCM_ID1,GPIO_MODE_00);
-	mt_set_gpio_pull_enable(GPIO_LCM_ID1, GPIO_PULL_DISABLE);
-	mt_set_gpio_dir(GPIO_LCM_ID1, GPIO_DIR_IN);
-	mt_set_gpio_mode(GPIO_LCM_ID2,GPIO_MODE_00);
-	mt_set_gpio_pull_enable(GPIO_LCM_ID2, GPIO_PULL_DISABLE);
-	mt_set_gpio_dir(GPIO_LCM_ID2, GPIO_DIR_IN);
-
-	value = mt_get_gpio_in(GPIO_LCM_ID2)<<1 | mt_get_gpio_in(GPIO_LCM_ID1);
-	if(value)
-		return LCM_TDT;
-
-	return LCM_TDT;
-}
-//legen add end 
-#endif
 
 static int first_init=0;
 static void lcm_init(void)
