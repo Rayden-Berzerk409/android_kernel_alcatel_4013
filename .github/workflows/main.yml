@@ -37,13 +37,13 @@ jobs:
     - name: Build Kernel
       run: |
         if [[ ! -d gcc ]]; then
-          git clone https://github.com/melekpro/linaro-4.9.4 gcc
+          git clone https://github.com/LinerSRT/arm-eabi-4.8 gcc
         fi
         mkdir -p out
         export USE_CCACHE=1
         export ARCH=arm
         export SUBARCH=arm
-        export CROSS_COMPILE=${PWD}/gcc/bin/arm-cortex_a7-
+        export CROSS_COMPILE=${PWD}/gcc/bin/arm-eabi-
         export TARGET=out
         make O=out ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE $KERNEL_DEFCONFIG
         make O=out ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE -j8 | tee build.log
