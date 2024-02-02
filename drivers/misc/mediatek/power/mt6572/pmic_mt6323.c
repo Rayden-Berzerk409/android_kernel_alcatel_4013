@@ -1028,9 +1028,6 @@ void fchr_key_int_handler(void)
     kal_uint32 ret=0;
 
     xlog_printk(ANDROID_LOG_INFO, "Power/PMIC", "[accdet_int_handler]....\n");
-    
-   ret = accdet_irq_handler();
-	}
     ret=pmic_config_interface(INT_STATUS1,0x1,0x1,2);    
 }
 
