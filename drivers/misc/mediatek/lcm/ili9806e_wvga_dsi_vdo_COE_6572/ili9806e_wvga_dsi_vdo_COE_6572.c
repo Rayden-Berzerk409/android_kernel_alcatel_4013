@@ -676,7 +676,8 @@ static void lcm_resume(void)
 	//push_table(lcm_sleep_out_setting, sizeof(lcm_sleep_out_setting) / sizeof(struct LCM_setting_table), 1);
 }
 
-static void lcm_update(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
+static void lcm_update(unsigned int x, unsigned int y,
+                       unsigned int width, unsigned int height)
 {
 	unsigned int x0 = x;
 	unsigned int y0 = y;
