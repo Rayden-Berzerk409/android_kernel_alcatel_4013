@@ -588,9 +588,6 @@ static void lcm_get_params(LCM_PARAMS *params)
 	//data_rate = CLOCK_rate * 2;
 }
 
-#if 0
-//legen add for detect lcm vendor
-
 static int first_init=0;
 static void lcm_init(void)
 {
