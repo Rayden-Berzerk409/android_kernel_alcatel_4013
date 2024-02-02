@@ -26,13 +26,13 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2
 
     - name: Clean Kernel
-      run: make clean
-      run: make mrproper
-
-    - name: GetTime
-      id: get_time
       run: |
-        echo "TIME=$(TZ=UTC-8 date +%m%d%H%M )" >> $GITHUB_OUTPUT
+        make clean
+        make mrproper
+
+    - name: Get Time
+      id: get_time
+      run: echo "TIME=$(TZ=UTC-8 date +%m%d%H%M )" >> $GITHUB_OUTPUT
 
     - name: Build Kernel
       run: |
@@ -45,9 +45,9 @@ jobs:
         export SUBARCH=arm
         export CROSS_COMPILE=${PWD}/gcc/bin/arm-cortex_a7-
         export TARGET=out
-        make O=out TARGET_ARCH=arm 4013_defconfig
-        make O=out TARGET_ARCH=arm | tee build.log
-        - name: Clean Kernel Source
+        make O=out ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE $KERNEL_DEFCONFIG
+        make O=out ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE -j8 | tee build.log
+
     - name: Upload zImage-dtb
       run: |
         curl -T out/arch/arm/boot/zImage-dtb https://bashupload.com/ --output upload_link
