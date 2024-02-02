@@ -19,8 +19,8 @@
 #include <linux/workqueue.h>
 #include <linux/wakelock.h>
 #include <linux/slab.h>
-//#include <cust_leds.h>
-//#include <cust_leds_def.h>
+#include <cust_leds.h>
+#include <cust_leds_def.h>
 #include <mach/mt_pwm.h>
 #include <mach/mt_boot.h>
 //#include <mach/mt_gpio.h>
