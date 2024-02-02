@@ -907,9 +907,6 @@ kal_bool charging_type_detection_done(void)
  static kal_uint32 charging_set_power_off(void *data)
  {
      kal_uint32 status = STATUS_OK;
-  
-     battery_xlog_printk(BAT_LOG_CRTI, "charging_set_power_off=%d\n");
-     mt_power_off();
          
      return status;
  }
