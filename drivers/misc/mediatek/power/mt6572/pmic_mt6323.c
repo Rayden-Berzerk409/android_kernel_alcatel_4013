@@ -1463,7 +1463,7 @@ ANALDO:
 VTCXO
 VA
 VCAMA
-VCN33 (¦³wifi/bt ¶}Ãö)
+VCN33 (Â¦Â³wifi/bt Â¶}ÃƒÃ¶)
 VCN28
 
 DIGLDO:
@@ -3524,12 +3524,6 @@ void pmic_debug_init(void)
         xlog_printk(ANDROID_LOG_INFO, "Power/PMIC", "fail to mkdir /proc/mt_pmic\n" );
         return;
     }
-
-    entry = create_proc_entry("dump_ldo_status", 00640, mt_pmic_dir);
-    if (entry) {
-        entry->read_proc = dump_ldo_status_read;
-    }
-}
 
 void PMIC_INIT_SETTING_V1(void)
 {
