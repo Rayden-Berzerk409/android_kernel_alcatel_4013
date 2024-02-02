@@ -38,6 +38,8 @@ jobs:
         if [[ ! -d gcc ]]; then
           git clone https://github.com/melekpro/linaro-4.9.4 gcc
         fi
+        - name: Clean Kernel Source
+        run: make mrproper
         mkdir -p out
         export USE_CCACHE=1
         export ARCH=arm
