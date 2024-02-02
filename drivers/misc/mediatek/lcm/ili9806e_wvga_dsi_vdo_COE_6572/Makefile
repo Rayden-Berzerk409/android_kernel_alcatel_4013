@@ -3,7 +3,7 @@
 #
 include $(srctree)/drivers/misc/mediatek/Makefile.custom
 
-obj-y += ili9806c_dsi_vdo_txd_ips.o
+obj-y += ili9806e_wvga_dsi_vdo_COE_6572.o
 
 
 
