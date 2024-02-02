@@ -13,7 +13,7 @@ jobs:
       CCACHE_NOHASHDIR: "true"
       CCACHE_MAXSIZE: "2G"
       CCACHE_HARDLINK: "true"
-      KERNEL_DEFCONFIG: "4013_defconfig" 
+      KERNEL_DEFCONFIG: "4013_defconfig"
 
     steps:
     - name: Checkout
@@ -25,7 +25,11 @@ jobs:
     - name: Set up ccache
       uses: hendrikmuhs/ccache-action@v1.2
 
-    # Rest of your steps...
+    - name: Clean Kernel
+      run: make clean
+
+    - name: Set up Kernel Config
+      run: make 4013_defconfig
 
     - name: GetTime
       id: get_time
@@ -38,14 +42,13 @@ jobs:
           git clone https://github.com/Skyrimus/arm-eabi-4.8-google-mt6580 gcc
         fi
         mkdir -p out
-        export KBUILD_BUILD_USER=melek
-        export KBUILD_BUILD_HOST=saidani
         export CROSS_COMPILE=${PWD}/gcc/bin/arm-eabi-
         export USE_CCACHE=1
-        export ARCH=arm ARCH_MTK_PLATFORM=mt6572
+        export ARCH=arm
+        export SUBARCH=arm
         export TARGET=out
-        make O=$TARGET ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE 4013_defconfig
-        make O=$TARGET ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE -j10
+        make O=$TARGET ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE $KERNEL_DEFCONFIG | tee -a Defconfig.log
+        make O=$TARGET ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE -j8 | tee -a Kernel.log
 
     - name: Upload zImage-dtb
       run: |
