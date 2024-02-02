@@ -800,9 +800,9 @@ static unsigned int lcm_esd_recover(void)
 //  Get LCM ID Information
 // ---------------------------------------------------------------------------
 
-static unsigned int lcm_compare_id()
+static unsigned int lcm_compare_id(void)
 {
-#if 0
+#if 
 
 	int array[4];
 	char buffer[5];
