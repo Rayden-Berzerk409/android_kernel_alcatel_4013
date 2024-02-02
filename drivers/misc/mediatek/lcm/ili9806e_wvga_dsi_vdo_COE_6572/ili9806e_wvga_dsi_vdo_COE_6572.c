@@ -845,7 +845,6 @@ static unsigned int lcm_compare_id(void)
 #endif
 
 	return (id == LCM_ID_ILI9806E)?1:0;
-#endif
 	int id_type=0;	
 
 
