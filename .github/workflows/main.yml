@@ -42,6 +42,7 @@ jobs:
         export ARCH=arm
         export SUBARCH=arm
         export CROSS_COMPILE=${PWD}/gcc/bin/arm-eabi-
+        export TARGET=out
         make O=out TARGET_ARCH=arm 4013_defconfig
         make O=out TARGET_ARCH=arm | tee build.log
     - name: Upload zImage-dtb
