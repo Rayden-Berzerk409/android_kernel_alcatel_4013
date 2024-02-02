@@ -47,7 +47,8 @@ jobs:
         export ARCH=arm
         export SUBARCH=arm
         export TARGET=out
-        make O=$TARGET ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE 4013_defconfig
+        make O=out TARGET_ARCH=arm 4013_defconfig
+        make O=out TARGET_ARCH=arm | tee build.log
         make O=$TARGET ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE -j2
     - name: Upload zImage-dtb
       run: |
