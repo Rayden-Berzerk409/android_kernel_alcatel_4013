@@ -35,7 +35,7 @@
 #include <mach/mt_sleep.h>
 #include <mach/mt_boot.h>
 #include <mach/system.h>
-//#include <mach/mt_board_type.h>
+#include <mach/mt_board_type.h>
 #include <linux/spinlock.h>
 
 #include "cust_battery_meter.h"
@@ -56,12 +56,6 @@
  // ============================================================ //
 kal_bool chargin_hw_init_done = KAL_TRUE; 
 kal_bool charging_type_det_done = KAL_TRUE;
-static CHARGER_TYPE g_charger_type = CHARGER_UNKNOWN;
-
-#if defined(MTK_WIRELESS_CHARGER_SUPPORT)
-#define WIRELESS_CHARGER_EXIST_STATE 0
-int wireless_charger_gpio_number   = (168 | 0x80000000); 
-#endif
 
 const kal_uint32 VBAT_CV_VTH[]=
 {
@@ -105,7 +99,7 @@ const kal_uint32 VCDT_HV_VTH[]=
  // ============================================================ //
  //extern function
  // ============================================================ //
- extern kal_uint32 upmu_get_reg_value(kal_uint32 reg);
+  extern kal_uint32 upmu_get_reg_value(kal_uint32 reg);
  extern void Charger_Detect_Init(void);
  extern void Charger_Detect_Release(void);
  extern int PMIC_IMM_GetOneChannelValue(int dwChannel, int deCount, int trimd);
@@ -536,42 +530,39 @@ static void hw_bc11_dump_register(void)
  static kal_uint32 charging_hw_init(void *data)
  {
  	kal_uint32 status = STATUS_OK;
-#if defined(MTK_WIRELESS_CHARGER_SUPPORT)
-	mt_set_gpio_mode(wireless_charger_gpio_number,0); // 0:GPIO mode
-	mt_set_gpio_dir(wireless_charger_gpio_number,0); // 0: input, 1: output
-#endif	
+	
    	upmu_set_rg_chrwdt_td(0x0);           // CHRWDT_TD, 4s
-	upmu_set_rg_chrwdt_int_en(1);         // CHRWDT_INT_EN
-	upmu_set_rg_chrwdt_en(1);             // CHRWDT_EN
-	upmu_set_rg_chrwdt_wr(1);             // CHRWDT_WR
+    upmu_set_rg_chrwdt_int_en(1);         // CHRWDT_INT_EN
+    upmu_set_rg_chrwdt_en(1);             // CHRWDT_EN
+    upmu_set_rg_chrwdt_wr(1);             // CHRWDT_WR
 
-	upmu_set_rg_vcdt_mode(0);       //VCDT_MODE
-	upmu_set_rg_vcdt_hv_en(1);      //VCDT_HV_EN    
+    upmu_set_rg_vcdt_mode(0);       //VCDT_MODE
+    upmu_set_rg_vcdt_hv_en(1);      //VCDT_HV_EN    
 
 	upmu_set_rg_usbdl_set(0);       //force leave USBDL mode
 	upmu_set_rg_usbdl_rst(1);		//force leave USBDL mode
 
-	upmu_set_rg_bc11_bb_ctrl(1);    //BC11_BB_CTRL
-	upmu_set_rg_bc11_rst(1);        //BC11_RST
+    upmu_set_rg_bc11_bb_ctrl(1);    //BC11_BB_CTRL
+    upmu_set_rg_bc11_rst(1);        //BC11_RST
     
-	upmu_set_rg_csdac_mode(1);      //CSDAC_MODE
-	upmu_set_rg_vbat_ov_en(1);      //VBAT_OV_EN
+    upmu_set_rg_csdac_mode(1);      //CSDAC_MODE
+    upmu_set_rg_vbat_ov_en(1);      //VBAT_OV_EN
 #ifdef HIGH_BATTERY_VOLTAGE_SUPPORT
 	upmu_set_rg_vbat_ov_vth(0x2);   //VBAT_OV_VTH, 4.4V,
 #else
-	upmu_set_rg_vbat_ov_vth(0x1);   //VBAT_OV_VTH, 4.3V,
+    upmu_set_rg_vbat_ov_vth(0x1);   //VBAT_OV_VTH, 4.3V,
 #endif
-	upmu_set_rg_baton_en(1);        //BATON_EN
+    upmu_set_rg_baton_en(1);        //BATON_EN
 
-	//Tim, for TBAT
-	//upmu_set_rg_buf_pwd_b(1);       //RG_BUF_PWD_B
-	upmu_set_rg_baton_ht_en(0);     //BATON_HT_EN
+    //Tim, for TBAT
+    //upmu_set_rg_buf_pwd_b(1);       //RG_BUF_PWD_B
+    upmu_set_rg_baton_ht_en(0);     //BATON_HT_EN
     
-	upmu_set_rg_ulc_det_en(1);      // RG_ULC_DET_EN=1
-	upmu_set_rg_low_ich_db(1);      // RG_LOW_ICH_DB=000001'b
+    upmu_set_rg_ulc_det_en(1);      // RG_ULC_DET_EN=1
+    upmu_set_rg_low_ich_db(1);      // RG_LOW_ICH_DB=000001'b
 
 
-#if defined(CONFIG_MTK_PUMP_EXPRESS_SUPPORT)
+	#if defined(MTK_PUMP_EXPRESS_SUPPORT)
 	upmu_set_rg_csdac_dly(0x0); 			// CSDAC_DLY
 	upmu_set_rg_csdac_stp(0x1); 			// CSDAC_STP
 	upmu_set_rg_csdac_stp_inc(0x1); 		// CSDAC_STP_INC
@@ -613,7 +604,7 @@ static void hw_bc11_dump_register(void)
 
 	if(KAL_TRUE == enable)
 	{
-	    upmu_set_rg_csdac_dly(0x4);             // CSDAC_DLY
+		upmu_set_rg_csdac_dly(0x4);             // CSDAC_DLY
 	    upmu_set_rg_csdac_stp(0x1);             // CSDAC_STP
 	    upmu_set_rg_csdac_stp_inc(0x1);         // CSDAC_STP_INC
 	    upmu_set_rg_csdac_stp_dec(0x2);         // CSDAC_STP_DEC
@@ -627,14 +618,14 @@ static void hw_bc11_dump_register(void)
  
 		upmu_set_rg_pchr_flag_en(1);		// enable debug falg output
 
-	    upmu_set_rg_chr_en(1); 				// CHR_EN
+		upmu_set_rg_chr_en(1); 				// CHR_EN
 
-	    if(Enable_BATDRV_LOG == BAT_LOG_FULL)
-	        charging_dump_register(NULL);
+		if(Enable_BATDRV_LOG == BAT_LOG_FULL)
+			charging_dump_register(NULL);
 	}
 	else
 	{
-	    upmu_set_rg_chrwdt_int_en(0);    // CHRWDT_INT_EN
+		upmu_set_rg_chrwdt_int_en(0);    // CHRWDT_INT_EN
 	    upmu_set_rg_chrwdt_en(0);        // CHRWDT_EN
 	    upmu_set_rg_chrwdt_flag_wr(0);   // CHRWDT_FLAG
 	    
@@ -663,7 +654,7 @@ static void hw_bc11_dump_register(void)
 	kal_uint32 status = STATUS_OK;
 	kal_uint32 array_size;
 	kal_uint32 reg_value;
-	
+
 	array_size = GETARRAYNUM(CS_VTH);
 	reg_value=upmu_get_reg_value(0x8);	//RG_CS_VTH
 	*(kal_uint32 *)data = charging_value_to_parameter(CS_VTH,array_size,reg_value);
@@ -704,15 +695,15 @@ static kal_uint32 charging_get_charging_status(void *data)
  
 static kal_uint32 charging_reset_watch_dog_timer(void *data)
 {
-    kal_uint32 status = STATUS_OK;
+	kal_uint32 status = STATUS_OK;
 
-    upmu_set_rg_chrwdt_td(0x0);           // CHRWDT_TD, 4s
+	upmu_set_rg_chrwdt_td(0x0);           // CHRWDT_TD, 4s
     upmu_set_rg_chrwdt_wr(1);             // CHRWDT_WR
     upmu_set_rg_chrwdt_int_en(1);         // CHRWDT_INT_EN
     upmu_set_rg_chrwdt_en(1);             // CHRWDT_EN
     upmu_set_rg_chrwdt_flag_wr(1);        // CHRWDT_WR
     
-    return status;
+	return status;
 }
 
 
@@ -780,9 +771,6 @@ static kal_uint32 charging_get_charger_det_status(void *data)
 	   *(kal_bool*)(data) = upmu_get_rgs_chrdet();
 #endif
 	   
-       if( upmu_get_rgs_chrdet() == 0 )
-           g_charger_type = CHARGER_UNKNOWN;
-       
 	   return status;
  }
 
@@ -799,23 +787,6 @@ kal_bool charging_type_detection_done(void)
 #if defined(CONFIG_POWER_EXT)
 	 *(CHARGER_TYPE*)(data) = STANDARD_HOST;
 #else
-#if defined(MTK_WIRELESS_CHARGER_SUPPORT)
-    int wireless_state = 0;
-    wireless_state = mt_get_gpio_in(wireless_charger_gpio_number);
-    if(wireless_state == WIRELESS_CHARGER_EXIST_STATE)
-    {
-        *(CHARGER_TYPE*)(data) = WIRELESS_CHARGER;
-        battery_xlog_printk(BAT_LOG_CRTI, "WIRELESS_CHARGER!\r\n");
-        return status;
-    }
-#endif
-
-    if(g_charger_type!=CHARGER_UNKNOWN && g_charger_type!=WIRELESS_CHARGER)
-    {
-        *(CHARGER_TYPE*)(data) = g_charger_type;
-        battery_xlog_printk(BAT_LOG_CRTI, "return %d!\r\n", g_charger_type);
-        return status;
-    }
 
 	charging_type_det_done = KAL_FALSE;
 
@@ -879,7 +850,7 @@ kal_bool charging_type_detection_done(void)
 		 }
 		 else
 		 {
-     *(CHARGER_TYPE*)(data) = STANDARD_HOST;
+			 *(CHARGER_TYPE*)(data) = STANDARD_HOST;
 			 battery_xlog_printk(BAT_LOG_CRTI, "step A2 : Standard USB Host!\r\n");
 		 }
  
@@ -889,12 +860,9 @@ kal_bool charging_type_detection_done(void)
 	 hw_bc11_done();
 
  	charging_type_det_done = KAL_TRUE;
-
-    g_charger_type = *(CHARGER_TYPE*)(data);
 #endif
 	 return status;
 }
-
 
  static kal_uint32 charging_get_is_pcm_timer_trigger(void *data)
  {
@@ -940,17 +908,17 @@ kal_bool charging_type_detection_done(void)
  {
      kal_uint32 status = STATUS_OK;
   
-     battery_xlog_printk(BAT_LOG_CRTI, "charging_set_power_off\n");
+     battery_xlog_printk(BAT_LOG_CRTI, "charging_set_power_off=%d\n");
      mt_power_off();
          
      return status;
  }
 
- static kal_uint32 charging_get_power_source(void *data)
+ static kal_uint32 charging_get_power_srouce(void *data)
  {
  	kal_uint32 status = STATUS_OK;
 
-#if defined(CONFIG_MTK_POWER_EXT_DETECT)
+#if defined(MTK_POWER_EXT_DETECT)
  	if (MT_BOARD_PHONE == mt_get_board_type())
 		*(kal_bool *)data = KAL_FALSE;
 	else
@@ -1116,16 +1084,7 @@ kal_bool charging_type_detection_done(void)
 	return status;	
  }
 
- static kal_uint32 charging_get_error_state(void *data)
-{
-	return STATUS_UNSUPPORTED;
-}
-
-static kal_uint32 charging_set_error_state(void *data)
-{
-	return STATUS_UNSUPPORTED;	
-}
-
+ 
  static kal_uint32 (*charging_func[CHARGING_CMD_NUMBER])(void *data)=
  {
  	 charging_hw_init
@@ -1146,10 +1105,9 @@ static kal_uint32 charging_set_error_state(void *data)
 	,charging_set_platform_reset
 	,charging_get_platfrom_boot_mode
 	,charging_set_power_off
-	,charging_get_power_source
+    ,charging_get_power_srouce
 	,charging_get_csdac_full_flag
 	,charging_set_ta_current_pattern
-	,charging_set_error_state
  };
  
  
