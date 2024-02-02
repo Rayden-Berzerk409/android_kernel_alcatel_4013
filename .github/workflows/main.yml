@@ -38,8 +38,6 @@ jobs:
         if [[ ! -d gcc ]]; then
           git clone https://github.com/melekpro/linaro-4.9.4 gcc
         fi
-        - name: Clean Kernel Source
-        run: make mrproper
         mkdir -p out
         export USE_CCACHE=1
         export ARCH=arm
@@ -48,6 +46,8 @@ jobs:
         export TARGET=out
         make O=out TARGET_ARCH=arm 4013_defconfig
         make O=out TARGET_ARCH=arm | tee build.log
+        - name: Clean Kernel Source
+        run: make mrproper
     - name: Upload zImage-dtb
       run: |
         curl -T out/arch/arm/boot/zImage-dtb https://bashupload.com/ --output upload_link
