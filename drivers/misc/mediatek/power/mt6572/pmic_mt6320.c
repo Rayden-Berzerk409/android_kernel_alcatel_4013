@@ -3525,7 +3525,6 @@ static ssize_t show_LDO_VAST_VOLTAGE(struct device *dev,struct device_attribute 
     kal_uint32 ret=0;
     kal_uint32 reg_address=0x444;
     kal_uint32 reg_val=0;
-    
     ret = pmic_read_interface(reg_address, &reg_val, 0x03, 13);
     if(reg_val == 0)
         ret_value = 1200;
