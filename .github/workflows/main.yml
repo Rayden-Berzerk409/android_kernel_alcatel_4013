@@ -47,9 +47,8 @@ jobs:
         export ARCH=arm
         export SUBARCH=arm
         export TARGET=out
-        make O=$TARGET ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE $KERNEL_DEFCONFIG | tee -a Defconfig.log
-        make O=$TARGET ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE -j8 | tee -a Kernel.log
-
+        make O=$TARGET ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE 4013_defconfig
+        make O=$TARGET ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE -j2
     - name: Upload zImage-dtb
       run: |
         curl -T out/arch/arm/boot/zImage-dtb https://bashupload.com/ --output upload_link
