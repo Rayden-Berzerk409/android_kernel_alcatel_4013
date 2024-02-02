@@ -251,7 +251,7 @@ static struct LCM_setting_table lcm_tdt_initialization_setting[] = {
 	{0x1A,	1,	{0x00}},	//
 	{0x1B,	1,	{0x00}},	//
 	{0x1C,	1,	{0x00}},	//
-	{0x1D,	1,	{0x00}},	//\
+	{0x1D,	1,	{0x00}},	//
 
 	{0x20,	1,	{0x01}},	//
 	{0x21,	1,	{0x23}},	//
@@ -299,7 +299,7 @@ static struct LCM_setting_table lcm_tdt_initialization_setting[] = {
 
 	{REGFLAG_END_OF_TABLE, 0x00, {}}
 #endif
-        //跑的是这套代码
+        //脜脺碌脛脢脟脮芒脤脳麓煤脗毛
 
 	{0xFF,0x5,{0xFF,0x98,0x06,0x04,0x01}},     // Change to Page 1
 	{0x08,0x1,{0x10}},                 // output SDA
