@@ -20,7 +20,7 @@
 //#include <linux/autoconf.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
-#include <linux/module.h>
+#include <linux/module.h>  
 #include <linux/slab.h>
 #include <linux/sched.h>
 #include <linux/spinlock.h>
@@ -60,7 +60,7 @@
 
 #include <mtk_kpd.h>
 
-#if defined (MTK_KERNEL_POWER_OFF_CHARGING)
+#if defined (CONFIG_MTK_KERNEL_POWER_OFF_CHARGING)
 #include <mach/mt_boot.h>
 #include <mach/system.h>
 #include "mach/mt_gpt.h"
@@ -127,7 +127,7 @@ extern void charger_hv_detect_sw_workaround_init(void);
 extern void pmu_drv_tool_customization_init(void);
 
 
-#if defined (MTK_KERNEL_POWER_OFF_CHARGING)
+#if defined (CONFIG_MTK_KERNEL_POWER_OFF_CHARGING)
 extern void mt_power_off(void);
 static kal_bool long_pwrkey_press = false;
 static unsigned long timer_pre = 0; 
@@ -888,15 +888,14 @@ extern void kpd_pwrkey_pmic_handler(unsigned long pressed);
 void pwrkey_int_handler(void)
 {
     kal_uint32 ret=0;
-#if defined (MTK_KERNEL_POWER_OFF_CHARGING)
 	static kal_bool  key_press = KAL_FALSE;
-#endif
+
     xlog_printk(ANDROID_LOG_INFO, "Power/PMIC", "[pwrkey_int_handler]....\n");
 
     if(upmu_get_pwrkey_deb()==1)
     {
         xlog_printk(ANDROID_LOG_INFO, "Power/PMIC", "[pwrkey_int_handler] Release pwrkey\n");
-#if defined (MTK_KERNEL_POWER_OFF_CHARGING)
+#if defined (CONFIG_MTK_KERNEL_POWER_OFF_CHARGING)
 		if(g_boot_mode == KERNEL_POWER_OFF_CHARGING_BOOT)
 		{
 			if(key_press == KAL_TRUE)
@@ -923,7 +922,7 @@ void pwrkey_int_handler(void)
     else
     {
         xlog_printk(ANDROID_LOG_INFO, "Power/PMIC", "[pwrkey_int_handler] Press pwrkey\n");
-#if defined (MTK_KERNEL_POWER_OFF_CHARGING)
+#if defined (CONFIG_MTK_KERNEL_POWER_OFF_CHARGING)
 		if(g_boot_mode == KERNEL_POWER_OFF_CHARGING_BOOT)
 		{
 			key_press = KAL_TRUE;
@@ -1463,7 +1462,7 @@ ANALDO:
 VTCXO
 VA
 VCAMA
-VCN33 (Â¦Â³wifi/bt Â¶}ÃƒÃ¶)
+VCN33 (¦³wifi/bt ¶}Ãö)
 VCN28
 
 DIGLDO:
@@ -1775,14 +1774,11 @@ void dct_pmic_VCAMD_enable(kal_bool dctEnable)
 
     if(dctEnable == KAL_TRUE)
     {
-	pmic_config_interface(0x55c, 0x1,0x1,0x0);
         upmu_set_rg_vcamd_en(1);
     }
     else
     {
         upmu_set_rg_vcamd_en(0);
-	msleep(20);
-	pmic_config_interface(0x55c, 0x0,0x1,0x0);
     }
 }
 
@@ -3503,7 +3499,7 @@ static int dump_ldo_status_read(char *page, char **start, off_t off,
     p += sprintf(p, "VUSB    =%d\n",  (((val_1)&(0x0400))>>10) );
 
     *start = page + off;
-
+ 
     len = p - page;
     if (len > off)
         len -= off;
@@ -3516,6 +3512,7 @@ static int dump_ldo_status_read(char *page, char **start, off_t off,
 
 void pmic_debug_init(void)
 {
+/*
     struct proc_dir_entry *entry;
     struct proc_dir_entry *mt_pmic_dir;
 
@@ -3524,6 +3521,13 @@ void pmic_debug_init(void)
         xlog_printk(ANDROID_LOG_INFO, "Power/PMIC", "fail to mkdir /proc/mt_pmic\n" );
         return;
     }
+
+    entry = create_proc_entry("dump_ldo_status", 00640, mt_pmic_dir);
+    if (entry) {
+        entry->read_proc = dump_ldo_status_read;
+    }
+*/
+}
 
 void PMIC_INIT_SETTING_V1(void)
 {
@@ -3640,7 +3644,6 @@ ret = pmic_config_interface(0x778,0x1,0x1,15); // [15:15]: RG_VREF18_ENB_MD;
 
 void PMIC_CUSTOM_SETTING_V1(void)
 {    
-	pmic_config_interface(0x55c, 0x0,0x1,0x0);
 	#ifdef KPD_PMIC_RSTKEY_MAP
 		upmu_set_rg_fchr_keydet_en(0);
 		upmu_set_rg_fchr_pu_en(1);
